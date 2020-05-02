@@ -1,0 +1,189 @@
+{% extends "base.html" %}
+{% block content %}
+<link rel="stylesheet" href="/static/timeline.css">
+<div>
+  <div class="container d-flex justify-content-center mt-2">
+    <!-- Button trigger modal -->
+    <button type="button" class="btn btn-primary rounded-circle btn-secondary" data-toggle="modal"
+      data-target="#addEvent">
+      + New event
+    </button>
+    <!-- Modal -->
+    <div class="modal fade" id="addEvent" data-backdrop="static" tabindex="-1" role="dialog"
+      aria-labelledby="staticBackdropLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel">New event</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <form method="POST" action="/" enctype="multipart/form-data">
+            <div class="modal-body">
+              {{ form.hidden_tag() }}
+              <div class="form-group">
+                {{ form.city.label(class="form-control-label") }}
+                {{ form.city(class="form-control form-control") }}
+              </div>
+              <div class="form-group">
+                {{ form.country.label(class="form-control-label") }}
+                {{ form.country(class="form-control form-control") }}
+              </div>
+              <div class="form-group">
+                {{ form.date.label(class="form-control-label") }}
+                {{ form.date()}}
+              </div>
+              <div class="form-group">
+                {{ form.description.label(class="form-control-label") }}
+                {{ form.description(class="form-control form-control", cols="35", rows="5") }}
+              </div>
+              <div class="form-group">
+                {{ form.drivelink.label(class="form-control-label") }}
+                {{ form.drivelink(class="form-control form-control") }}
+              </div>
+              <div class="form-group">
+                {{ form.image.label(class="form-control-label") }}
+                {{ form.image(class="form-control-file") }}
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              {{ form.submit(class="btn btn-outline-info") }}
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <!--Timeline-->
+  </div>
+  <div class="container">
+    {% for event in events %}
+    <div class="modal fade" id="editEvent_{{loop.index}}" data-backdrop="static" tabindex="-1" role="dialog"
+      aria-labelledby="staticBackdropLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel">Edit event</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <form method="POST" action="/update/{{event.id}}" enctype="multipart/form-data">
+            <div class="modal-body">
+              {{ form.hidden_tag() }}
+              <div class="form-group">
+                {{ form.city.label(class="form-control-label") }}
+                {{ form.city(class="form-control", value=event.city) }}
+              </div>
+              <div class="form-group">
+                {{ form.country.label(class="form-control-label") }}
+                {{ form.country(class="form-control", value=event.country) }}
+              </div>
+              <div class="form-group">
+                {{ form.date.label(class="form-control-label") }}
+                <input type="date" name="date" value={{event.date}}>
+              </div>
+              <div class="form-group">
+                {{ form.drivelink.label(class="form-control-label") }}
+                {{ form.drivelink(class="form-control", value=event.drivelink) }}
+              </div>
+              <div class="form-group">
+                {{ form.description.label(class="form-control-label") }}
+                <textarea name='description' class="form-control" type="text" rows="5">{{event.description}}</textarea>
+              </div>
+              <div class="form-group">
+                {{ form.image.label(class="form-control-label")}}
+                {{ form.image(class="form-control-file") }}
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              {{ form.submit(class="btn btn-outline-info") }}
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="modal fade" id="image_{{loop.index}}" data-backdrop="static" tabindex="-1" role="dialog"
+      aria-labelledby="staticBackdropLabel" aria-hidden="true">
+      <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel">{{event.city}}-{{event.country}}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <img class="img-fluid " src="/static/images/{{event.image}}" alt="5 Terre" style="width:100%">
+        </div>
+      </div>
+    </div>
+    {% if loop.index%2==1 %}
+    <!--Event-left-->
+    <div class="event-left mb-5">
+      <div class="row mt-2">
+        <div class="col">
+          <div class="event-date" style="text-align:right">
+            <h2>{{event.date.strftime('%Y-%m')}}</h2>
+          </div>
+        </div>
+        <div class="col col-right">
+          <div class="event-content">
+            <h2>{{event.city}}, {{event.country}}</h2>
+            <p>{{event.description}}</p>
+            <p>GoogleDrive Link: {{event.drivelink}}</p>
+            <div class="polaroid shadow-custom" data-toggle="modal" data-target="#image_{{loop.index}}">
+              <img class="img-fluid " src="/static/images/{{event.image}}" alt="5 Terre" style="width:100%">
+              <div class="container">
+                <p>{{event.image[:-4]}}</p>
+              </div>
+            </div>
+          </div>
+          <button type="button" class="btn btn-primary" data-toggle="modal"
+            data-target="#editEvent_{{loop.index}}">Edit</button>
+          <form action="{{ url_for('delete', event_id=event.id) }}" method="POST" style="display: inline-block;">
+            <input class="btn btn-danger" type="submit" value="Delete">
+          </form>
+        </div>
+      </div>
+    </div>
+    {% else %}
+    <!--Event-right-->
+    <div class="event-right mb-5">
+      <div class="row mt-2">
+        <div class="col">
+          <div class="event-content">
+            <h2 style="text-align: end;">{{event.city}}, {{event.country}}</h2>
+            <p>{{event.description}}</p>
+            <p>GoogleDrive Link: {{event.drivelink}}</p>
+            <div style="display: flex; justify-content: flex-end;">
+              <div class="polaroid shadow-custom" data-toggle="modal" data-target="#image_{{loop.index}}">
+                <img class="img-fluid " src="/static/images/{{event.image}}" alt="5 Terre" style="width:100%">
+                <div class="container">
+                  <p class='mb-0'>{{event.image[:-4]}}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="d-flex justify-content-end">
+            <form action="{{ url_for('delete', event_id=event.id) }}" method="POST" style="display: inline-block;"
+              class="mr-1">
+              <input class="btn btn-danger" type="submit" value="Delete">
+            </form>
+            <button type="button" class="btn btn-primary" data-toggle="modal"
+              data-target="#editEvent_{{loop.index}}">Edit</button>
+          </div>
+        </div>
+        <div class="col col-right">
+          <div class="event-date">
+            <h2>{{event.date.strftime('%Y-%m')}}</h2>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

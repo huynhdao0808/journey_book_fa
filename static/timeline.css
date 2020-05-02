@@ -1,0 +1,40 @@
+.event-left .event-date h2{
+    text-align: right;
+}
+
+.col-right::before{
+    top: 0;
+    bottom: 0;
+    position: absolute;
+    content: " ";
+    width: 3px;
+    background-color: rgb(255, 213, 166);;
+    margin-left: -15px;
+}
+.event-right .event-content{
+    text-align: right;
+}
+.polaroid {
+    width: 90%;
+    background-color: white;
+    margin-bottom: 25px;
+
+  }  
+.polaroid .container p{
+    text-align: center;
+}
+
+.shadow-custom:hover {
+    box-shadow: 0 12px 15px 0 rgba(0, 0, 0, 0.2), 0 30px 50px 0 rgba(0, 0, 0, 0.19);
+  }
+.shadow-custom{
+    box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)
+  }
+
+  .shadow-custom{
+    transition: 0.3s;
+  }
+
+  body {
+    background-color: rgb(255, 238, 218);
+}
